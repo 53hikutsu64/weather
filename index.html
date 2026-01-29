@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="css/style.css">
+	<link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+	<title></title>
+	<link rel="apple-touch-icon" href="icon.png">
+</head>
+
+<body>
+	<div class="wrapper">
+		<div class="container">
+			<h1>World Weather</h1>
+			<form id="weather-form">
+
+				<input type="text" id="city-input" name="city" placeholder="都市名"
+					required><!-- requiredは空だったと時にデータを送信しないよ！って -->
+				<button type="submit">CHECK</button>
+			</form>
+
+			<div id="message">
+				<!-- ここに結果が表示されます。-->
+			</div>
+
+			<div id="results">
+				<p id="results-time"></p>
+				<p id="results-country"></p>
+				<p id="results-city"></p>
+				<div class="results-condition">
+					<img id="results-icon" alt="icon">
+					<p id="results-text"></p>
+				</div>
+				<div id="results-moon">
+					<img id="moon-mini-icon" src="" alt="moon icon">
+					<span id="moon-phase-text"></span>
+				</div>
+				<p id="results-temp"></p>
+				<p id="results-precip"></p>
+				<p id="results-wind"></p>
+
+			</div>
+
+			<!-----------------デバックツールボックス-------------------- -->
+
+			<div id="debug-wrapper">
+				<button id="debug-gear" onclick="toggleDebug(true)"><img src="img/gia.png" alt="設定アイコン"></button>
+
+				<div id="debug-menu">
+					<div class="debug-header">
+						<span>SYSTEM MODE</span>
+						<button id="debug-close" onclick="toggleDebug(false)">✕</button>
+					</div>
+
+					<div class="debug-body">
+						<div class="debug-item">
+							<label class="toggle-container">
+								<span>TEST MODE ACTIVE:</span>
+								<input type="checkbox" id="mode-toggle" onchange="handleModeChange(this.checked)">
+							</label>
+						</div>
+
+						<div class="debug-item">
+							<p class="label">CONDITION</p>
+							<div class="weather-btn-grid">
+								<button onclick="setWeather(1000, '快晴')">快晴</button>
+								<button onclick="setWeather(1003, '晴時々曇')">時曇</button>
+								<button onclick="setWeather(1006, '曇り')">曇り</button>
+								<button onclick="setWeather(1063, '雨')">雨</button>
+								<button onclick="setWeather(1195, '激しい雨')">豪雨</button>
+								<button onclick="setWeather(1030, '霧')">霧</button>
+								<button onclick="setWeather(1225, '雪')">雪</button>
+								<button onclick="setWeather(1087, '雷')">雷雨</button>
+							</div>
+						</div>
+
+						<div class="debug-item">
+							<p class="label">DAY / NIGHT</p>
+							<div class="time-btn-grid">
+								<button onclick="setTime(1)">DAY</button>
+								<button onclick="setTime(0)">NIGHT</button>
+							</div>
+						</div>
+
+						<div class="debug-item" id="debug-lunar-item"> <div class="label">MOON</div>
+							<div class="moon-btn-grid">
+								<button onclick="setMoonPhase('New Moon', this)"><img src="img/Full-Moon.png"
+										title="新月"style="filter: brightness(0);"></button>
+								<button onclick="setMoonPhase('Waxing Crescent', this)"><img
+										src="img/Waxing-Crescent.png" title="三日月"></button>
+								<button onclick="setMoonPhase('First Quarter', this)"><img src="img/First-Quarter.png"
+										title="上弦の月"></button>
+								<button onclick="setMoonPhase('Waxing Gibbous', this)"><img src="img/Waxing-Gibbous.png"
+										title="満月前"></button>
+								<button onclick="setMoonPhase('Full Moon', this)"><img src="img/Full-Moon.png"
+										title="満月"></button>
+								<button onclick="setMoonPhase('Waning Gibbous', this)"><img src="img/Waning-Gibbous.png"
+										title="満月後"></button>
+								<button onclick="setMoonPhase('Last Quarter', this)"><img src="img/Last-Quarter.png"
+										title="下弦の月"></button>
+								<button onclick="setMoonPhase('Waning Crescent', this)"><img
+										src="img/Waning-Crescent.png" title="明けの三日月"></button>
+							</div>
+						</div>
+
+						<div class="debug-item">
+							<p class="label">WIND SPEED: <span id="val-wind">5.0</span> m/s</p>
+							<input type="range" id="slider-wind" min="0" max="20" step="0.5" value="5"
+								oninput="adjustWind(this.value)">
+
+							<p class="label">PRECIPITATION: <span id="val-precip">1.5</span> mm</p>
+							<input type="range" id="slider-precip" min="0" max="50" step="0.5" value="1.5"
+								oninput="adjustPrecip(this.value)">
+						</div>
+						<div class="debug-item">
+							<button onclick="enterScreenshotMode()">📸 SCREENSHOT MODE</button>
+						</div>
+						<button class="full-reset-btn" onclick="resetToProduction()">🔙 RESET</button>
+					</div>
+				</div>
+			</div>
+
+
+		</div>
+
+
+
+		<div class="sky-object">
+			<div class="sun-moon-light">
+				<img class="light" src="img/light.png" alt="">
+				<img class="sun" src="img/sun-moon.png" alt="">
+				<img class="moon" src="img/Full-Moon.png" alt="moon">
+			</div>
+			<div id="cloud-layer">
+				<div class="cloud-track far">
+					<div class="cloud-set">
+						<img src="img/cloud01.png" class="cloud c1">
+						<img src="img/cloud03.png" class="cloud c3">
+						<img src="img/cloud05.png" class="cloud c5">
+						<img src="img/cloud07.png" class="cloud c7">
+						<img src="img/cloud09.png" class="cloud c9">
+					</div>
+					<div class="cloud-set">
+						<img src="img/cloud01.png" class="cloud c1">
+						<img src="img/cloud03.png" class="cloud c3">
+						<img src="img/cloud05.png" class="cloud c5">
+						<img src="img/cloud07.png" class="cloud c7">
+						<img src="img/cloud09.png" class="cloud c9">
+					</div>
+				</div>
+
+				<div class="cloud-track near">
+					<div class="cloud-set">
+						<img src="img/cloud02.png" class="cloud c2">
+						<img src="img/cloud04.png" class="cloud c4">
+						<img src="img/cloud06.png" class="cloud c6">
+						<img src="img/cloud08.png" class="cloud c8">
+						<img src="img/cloud010.png" class="cloud c10">
+					</div>
+					<div class="cloud-set">
+						<img src="img/cloud02.png" class="cloud c2">
+						<img src="img/cloud04.png" class="cloud c4">
+						<img src="img/cloud06.png" class="cloud c6">
+						<img src="img/cloud08.png" class="cloud c8">
+						<img src="img/cloud010.png" class="cloud c10">
+					</div>
+				</div>
+			</div>
+
+			<div id="star-layer"></div>
+			<div id="rain-layer"></div>
+			<div id="snow-layer"></div>
+			<div id="lightning-layer">
+				<img src="" id="thunder-img" class="thunder-bolt" alt="雷">
+			</div>
+
+		</div>
+	</div>
+
+
+
+	<script src="js/script.js"></script>
+</body>
+
+
+</html>

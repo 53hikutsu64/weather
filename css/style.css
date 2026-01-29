@@ -1,0 +1,1185 @@
+@charset "utf-8";
+
+:root {
+	--main-text-color: #333333;
+	--accent-color: #418ee1;
+}
+
+.night {
+	--main-text-color: #ffffff;
+	--accent-color: #e7d84e;
+}
+
+
+
+body {
+	color: var(--main-text-color);
+	width: 100%;
+	height: 100vh;
+	display: flex;
+	background-image: linear-gradient(to top, #0eb3f4 0%, #8438d5 100%);
+	justify-content: center;
+	align-items: center;
+	font-family: "DotGothic16", sans-serif;
+
+}
+
+h1 {
+	letter-spacing: 2px;
+	text-align: center;
+	color: var(--accent-color);
+	filter: contrast(3);
+
+}
+
+
+#weather-form {
+	display: flex;
+	gap: 10px;
+	margin-bottom: 20px;
+}
+
+#city-input {
+	flex: 1;
+	width: 120px;
+	padding: 12px;
+	border: none;
+	border-radius: 8px;
+	background: rgba(255, 255, 255, 0.2);
+	backdrop-filter: blur(10px);
+	color: var(--main-text-color);
+	outline: none;
+	font-family: inherit;
+	font-size: 1.1rem;
+	box-shadow: inset -5px -5px 10px 0px rgba(255, 255, 255, 0.5), inset 5px 5px 10px 0px rgba(0, 0, 0, 0.3);
+	opacity: 0.6;
+}
+
+button {
+	padding: 8px 15px;
+	border: none;
+	border-radius: 8px;
+	background: var(--accent-color);
+	color: var(--main-text-color);
+	cursor: pointer;
+	font-family: inherit;
+	font-size: 1.2rem;
+	letter-spacing: 3px;
+	transition: all 0.3s ease;
+	box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.5), inset 0px -3px 6px -2px rgba(0, 0, 0, 0.3);
+	position: relative;
+	overflow: hidden;
+	opacity: 0.8;
+}
+
+button::after {
+	content: "";
+	position: absolute;
+	top: -50%;
+	left: -60%;
+	width: 20%;
+	height: 200%;
+	background: rgba(255, 255, 255, 0.4);
+	transform: rotate(30deg);
+	transition: 0.2s;
+}
+
+button:hover::after {
+	left: 120%;
+}
+
+button:hover {
+	transform: translateY(1px);
+	filter: brightness(1.2);
+	color: #ffffff;
+	box-shadow: inset -5px -5px 10px 0px rgba(255, 255, 255, 0.5), inset 5px 5px 10px 0px rgba(0, 0, 0, 0.3);
+}
+
+.night button:hover {
+
+	filter: brightness(0.8);
+	color: #ffffff;
+	box-shadow: inset -5px -5px 10px 0px rgba(255, 255, 255, 0.5), inset 5px 5px 10px 0px rgba(0, 0, 0, 0.3);
+}
+
+
+#results {
+	display: none;
+	margin-bottom: 40px;
+}
+
+.day #results-moon {
+	display: none;
+}
+
+#results-moon{
+	margin-bottom: 20px;
+}
+
+#results>p,
+.results-condition,
+#results-moon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	margin-top: 10px;
+}
+
+#results-icon {
+	width: 40px;
+	height: 40px;
+	object-fit: contain;
+}
+
+#moon-mini-icon {
+	width: 30px;
+	height: 30px;
+	object-fit: contain;
+}
+
+
+
+
+.sky-object {
+	position: fixed;
+	top: 20%;
+	right: 10%;
+	z-index: -1;
+
+	.sun-moon-light {
+		position: relative;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		transform: scale(0.6);
+
+		.light {
+			position: absolute;
+			z-index: 1;
+			opacity: 0.4;
+			transform-origin: center center;
+		}
+
+		.sun {
+			position: absolute;
+			z-index: 2;
+			opacity: 0.8;
+		}
+
+		.moon {
+			opacity: 0.6;
+			position: absolute;
+			z-index: 2;
+		}
+	}
+
+
+	.New-Moon {
+		display: none;
+	}
+
+	.Waxing-Crescent .moon {
+		filter: brightness(0.8)
+	}
+
+	.light {
+		transform: scale(0.8);
+	}
+
+	.First-Quarter {
+		.moon {
+			transform: rotate(15deg);
+			transform-origin: center 180px;
+		}
+	}
+
+	.Waxing-Gibbous {
+		.moon {
+			filter: brightness(1.1)
+		}
+
+		.light {
+			transform: scale(1.2);
+		}
+	}
+
+	.Full-Moon {
+		.moon {
+			filter: brightness(1.2)
+		}
+
+		.light {
+			transform: scale(1.4);
+			opacity: 0.6;
+		}
+	}
+
+	.Waning-Gibbous {
+		.moon {
+			filter: brightness(1.1)
+		}
+
+		.light {
+			transform: scale(1.2);
+		}
+
+	}
+
+	.Last-Quarter {
+		.moon {
+			transform: rotate(15deg);
+			transform-origin: center -40px;
+		}
+	}
+
+	.Waning-Crescent {
+		.moon {
+			filter: brightness(0.8)
+		}
+
+		.light {
+			transform: scale(0.8);
+		}
+	}
+}
+
+/* -----------------------------雨アニメ関連--------------------------------------------------------- */
+
+#rain-layer,
+#snow-layer {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	/* 画面よりずっと大きくして、回転しても端が見えないようにする */
+	width: 300vmax;
+	height: 300vmax;
+	pointer-events: none;
+	z-index: 2;
+
+
+	transform: translate(-50%, -50%) rotate(var(--wind-angle));
+
+	overflow: visible;
+}
+
+
+.rain-drop {
+	position: absolute;
+	background-color: rgba(210, 222, 235, 0.4);
+	width: 2px;
+	height: 20px;
+
+	animation: fall-straight linear infinite;
+}
+
+@keyframes snow-sway {
+
+	0%,
+	100% {
+		/* 左端 */
+		transform: translateX(-15px);
+	}
+
+	50% {
+		/* 右端 */
+		transform: translateX(15px);
+	}
+}
+
+.snowflake {
+	position: absolute;
+	background-color: white;
+	border-radius: 50%;
+	opacity: 0.8;
+	filter: blur(1px);
+
+
+	animation:
+		fall-straight linear infinite,
+		snow-sway ease-in-out infinite;
+}
+
+
+@keyframes fall-straight {
+	0% {
+		transform: translateY(0);
+	}
+
+	100% {
+		transform: translateY(300vmax);
+	}
+}
+
+@keyframes snow-sway {
+
+	0%,
+	100% {
+		margin-left: -15px;
+	}
+
+	50% {
+		margin-left: 15px;
+	}
+}
+
+
+/* -------------------------------星関連------------------------------------------------------------- */
+
+
+#star-layer {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	z-index: -2;
+	display: none;
+	pointer-events: none;
+}
+
+
+.night #star-layer {
+	display: block;
+}
+
+.star {
+	position: absolute;
+	background-color: rgb(251, 230, 152);
+	border-radius: 50%;
+	opacity: 0;
+	animation: twinkle 3s infinite ease-in-out;
+}
+
+@keyframes twinkle {
+
+	0%,
+	100% {
+		opacity: 0;
+		transform: scale(0.5);
+	}
+
+	50% {
+		opacity: 0.8;
+		transform: scale(1.3);
+		box-shadow: 0 0 .5px .5px #f3ecd0;
+	}
+}
+
+
+
+
+
+/* ---------------------------------------------雷関連--------------------------------------------------------------------- */
+
+#lightning-layer {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	pointer-events: none;
+	z-index: 10;
+	background-color: rgb(245, 243, 204);
+	opacity: 0;
+}
+
+.thunder-bolt {
+	position: absolute;
+	opacity: 0;
+	transition: opacity 0.1s;
+}
+
+.bolt-type-0 {
+	width: auto;
+	height: 90vh;
+	left: 10%;
+	top: 25%;
+}
+
+.bolt-type-1 {
+	width: auto;
+	height: 90vh;
+	left: 50%;
+	top: 0;
+	transform: rotate(30deg);
+	transform-origin: center;
+}
+
+.bolt-type-2 {
+	width: auto;
+	height: 90vh;
+	left: 60%;
+	top: 12%;
+}
+
+.bolt-type-3 {
+	width: auto;
+	height: 90vh;
+	left: 20%;
+	top: -15%;
+	transform: rotate(-20deg)scaleX(-1);
+}
+
+.bolt-type-4 {
+	left: 10%;
+	top: 0;
+}
+
+#lightning-layer.flash-it .thunder-bolt {
+	opacity: 1;
+	transition: none;
+}
+
+.flash-it {
+	animation: lightning-flash 0.2s ease-out;
+}
+
+@keyframes lightning-flash {
+	0% {
+		opacity: 0;
+	}
+
+	10% {
+		opacity: 0.8;
+	}
+
+	20% {
+		opacity: 0.2;
+	}
+
+	30% {
+		opacity: 0.7;
+	}
+
+	100% {
+		opacity: 0;
+	}
+}
+
+
+
+/* ---------------------------------------------雲のアニメ関連--------------------------------------------------------- */
+#cloud-layer {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	overflow: hidden;
+	z-index: -1;
+}
+
+
+.cloud-track {
+	display: flex;
+	width: 400vw;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.cloud-track.far {
+	animation: moveTrack calc(var(--wind-duration) * 1.2) linear infinite;
+	z-index: -2;
+}
+
+
+.cloud-track.near {
+	animation: moveTrack calc(var(--wind-duration) * 0.6) linear infinite;
+	z-index: -1;
+}
+
+.far .cloud {
+	opacity: 0.4;
+	filter: blur(2px);
+	scale: 1.2;
+}
+
+.near .cloud {
+	opacity: 0.6;
+}
+
+.cloud-set {
+	position: relative;
+	width: 200vw;
+	height: 100vh;
+	flex-shrink: 0;
+	/* これを入れると、flexの中で幅が勝手に縮まなくなる */
+}
+
+
+.cloud {
+	position: absolute;
+	opacity: 0.6;
+}
+
+
+.c1 {
+	top: -3%;
+	left: 5%;
+	width: 200px;
+}
+
+.c2 {
+	top: 10%;
+	left: 25%;
+	width: 250px;
+}
+
+.c3 {
+	top: 20%;
+	left: 50%;
+	width: 220px;
+}
+
+.c4 {
+	top: 30%;
+	left: 95%;
+	width: 200px;
+}
+
+.c5 {
+	top: 60%;
+	left: 5%;
+	width: 280px;
+}
+
+.c6 {
+	top: 50%;
+	left: 45%;
+	width: 180px;
+}
+
+.c7 {
+	top: 40%;
+	left: 65%;
+	width: 250px;
+}
+
+.c8 {
+	top: 70%;
+	left: 75%;
+	width: 150px;
+}
+
+.c9 {
+	top: 80%;
+	left: 5%;
+	width: 200px;
+}
+
+.c10 {
+	top: 90%;
+	left: 35%;
+	width: 150px;
+}
+
+
+
+@keyframes moveTrack {
+	0% {
+		transform: translateX(0);
+	}
+
+	100% {
+		transform: translateX(-200vw);
+	}
+}
+
+/* ----------------------------天気毎の調整-------------------------------------------------------------- */
+
+.day .moon {
+	display: none;
+}
+
+.night .sun {
+	display: none;
+}
+
+.night .moon {
+	display: block;
+}
+
+
+
+.container {
+	max-width: 480px;
+
+	background-color: #ffffff30;
+	backdrop-filter: blur(2px);
+	padding: 40px;
+	border-radius: 10px;
+	box-shadow: inset -5px -5px 10px 0px rgba(0, 0, 0, 0.115), inset 5px 5px 10px 0px rgba(0, 0, 0, 0.115);
+
+}
+
+
+.default-bg {
+	background-image: linear-gradient(to right, #07b810 0%, #13b36e 100%);
+	transition: background 0.5s ease;
+}
+
+.sunny-bg {
+	background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+	transition: background 0.5s ease;
+
+	#cloud-layer {
+		display: none;
+	}
+}
+
+.night.sunny-bg {
+	background-image: linear-gradient(to top, #2d5252 0%, #1c023b 100%);
+	transition: background 0.5s ease;
+
+	#cloud-layer {
+		display: none;
+	}
+}
+
+.partly-cloudy-bg {
+	background-image: linear-gradient(to top, #95cfe6 0%, #b7b7b7 100%);
+	transition: background 0.5s ease;
+
+	.sun {
+		filter: blur(2px);
+		opacity: 0.01;
+
+	}
+
+
+	.light {
+		opacity: 0.01;
+		scale: 1.2;
+	}
+}
+
+.night.partly-cloudy-bg {
+	background-image: linear-gradient(to top, #2d5252 0%, #1c023b 100%);
+	transition: background 0.5s ease;
+
+	.moon {
+		filter: blur(4px);
+		opacity: 0.4;
+	}
+
+	.light {
+		filter: blur(8px);
+		opacity: 0.3;
+		scale: 1.3;
+	}
+
+	#cloud-layer {
+
+		opacity: 0.7;
+	}
+}
+
+.cloudy-bg {
+	background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+	transition: background 0.5s ease;
+
+	.sun {
+		display: none;
+	}
+
+	.light {
+		display: none;
+	}
+
+	#cloud-layer {
+		filter: blur(2px);
+		opacity: 0.6;
+	}
+
+}
+
+.night.cloudy-bg {
+	background-image: linear-gradient(to top, #192d2d 0%, #0e011d 100%);
+	transition: background 0.5s ease;
+
+	.moon {
+		filter: blur(9px);
+		opacity: 0.3;
+	}
+
+	.light {
+		filter: blur(15px);
+		opacity: 0.2;
+		scale: 1.3;
+	}
+
+	#cloud-layer {
+		opacity: 0.3;
+	}
+
+	#star-layer {
+		display: none;
+	}
+
+}
+
+.mist-bg {
+	background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+	transition: background 0.5s ease;
+
+	.sun {
+		display: none;
+	}
+
+	.light {
+		opacity: 0.1;
+	}
+
+	#cloud-layer {
+		opacity: 0.2;
+	}
+
+}
+
+.night.mist-bg {
+	background-image: linear-gradient(135deg, #3f3f3f 0%, #404856 100%);
+	transition: background 0.5s ease;
+
+	.moon {
+		filter: blur(9px);
+		opacity: 0.3;
+	}
+
+	.light {
+		filter: blur(15px);
+		opacity: 0.2;
+		scale: 1.3;
+	}
+
+	#cloud-layer {
+		opacity: 0.2;
+	}
+
+	#star-layer {
+		display: none;
+	}
+}
+
+.rainy-bg {
+	background: linear-gradient(to bottom, #7d9bbc, #52555b);
+
+	.sun {
+		display: none;
+	}
+
+	.light {
+		display: none;
+	}
+
+	#cloud-layer {
+		opacity: 0.3;
+	}
+}
+
+.night.rainy-bg {
+	background-image: linear-gradient(to top, #192d2d 0%, #0e011d 100%);
+
+	.moon {
+		filter: blur(9px);
+		opacity: 0.2;
+	}
+
+	.light {
+		filter: blur(15px);
+		opacity: 0.1;
+		scale: 1.3;
+	}
+
+	#star-layer {
+		display: none;
+	}
+}
+
+.heavy-rain-bg {
+	background: linear-gradient(to bottom, #557ca5, #43464b);
+
+	.sun {
+		display: none;
+	}
+
+	.light {
+		display: none;
+	}
+
+	#cloud-layer {
+		opacity: 0.3;
+		filter: brightness(0);
+	}
+}
+
+.night.heavy-rain-bg {
+	background: linear-gradient(to bottom, #192d2d 0%, #0e011d 100%);
+
+	.moon {
+		display: none;
+	}
+
+	.light {
+		display: none;
+	}
+
+	#cloud-layer {
+		opacity: 0.3;
+		filter: brightness(0);
+	}
+
+	#star-layer {
+		display: none;
+	}
+}
+
+.snowy-bg {
+	background-image: linear-gradient(to top, #9f9f9f 0%, #eeeeec 50%, #9f9f9f 100%);
+	transition: background 0.5s ease;
+
+
+	.sun {
+		display: none;
+
+	}
+
+
+	.light {
+		display: none;
+	}
+
+	#cloud-layer {
+		opacity: 0.1;
+		filter: brightness(1.5);
+	}
+}
+
+.night.snowy-bg {
+	background-image: linear-gradient(to top, #203636 0%, #1a0336 100%);
+	transition: background 0.5s ease;
+
+	.moon {
+		filter: blur(9px);
+		opacity: 0.3;
+	}
+
+	.light {
+		filter: blur(15px);
+		opacity: 0.2;
+		scale: 1.3;
+	}
+
+	#cloud-layer {
+		opacity: 0.3;
+		filter: brightness(1.5);
+	}
+
+	#star-layer {
+		display: none;
+	}
+}
+
+.thunder-bg {
+	background-image: linear-gradient(to top, #09203f 0%, #537895 100%);
+	transition: background 0.5s ease;
+
+	.sun {
+		display: none;
+	}
+
+	.light {
+		display: none;
+	}
+
+	#cloud-layer {
+		opacity: 0.6;
+		scale: 1.3;
+		filter: brightness(0.7);
+	}
+
+
+}
+
+.night.thunder-bg {
+	background: linear-gradient(to bottom, #2c3e50, #000000);
+	transition: background 0.5s ease;
+
+	.moon {
+		filter: blur(9px);
+		opacity: 0.2;
+	}
+
+	.light {
+		filter: blur(15px);
+		opacity: 0.1;
+		scale: 1.3;
+	}
+
+	#cloud-layer {
+		opacity: 0.6;
+		scale: 1.3;
+		filter: brightness(0.2);
+	}
+
+	#star-layer {
+		display: none;
+	}
+}
+
+
+
+body.day.sunny-bg .container {
+	border: 1px solid rgba(255, 223, 128, 0.6);
+	box-shadow:
+		0 0 30px rgba(255, 215, 0, 0.4),
+		0 0 60px rgba(255, 215, 0, 0.2);
+	transition: all 0.8s ease;
+}
+
+
+body.night.sunny-bg .container {
+	border: 1px solid rgba(200, 200, 255, 0.5);
+	box-shadow:
+		0 0 30px rgba(180, 180, 255, 0.3),
+		0 0 50px rgba(180, 180, 255, 0.1);
+	transition: all 0.8s ease;
+}
+
+
+/* -----------------------------------デバックツールボックス------------------------------------------------- */
+
+#debug-wrapper {
+	position: fixed;
+	bottom: 10px;
+	right: 10px;
+	z-index: 1000;
+	font-family: 'DotGothic16', sans-serif;
+	pointer-events: none;
+}
+
+#debug-gear,
+#debug-menu {
+	pointer-events: auto;
+}
+
+/* ギアボタン */
+#debug-gear {
+	width: 50px;
+	height: 50px;
+	background: rgba(255, 255, 255, 0.204);
+	border-radius: 50%;
+	cursor: pointer;
+	box-shadow: 0 0 15px rgba(255, 255, 255, 0.516);
+
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 0;
+	overflow: hidden;
+
+
+	transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+
+#debug-gear img {
+	width: 70%;
+	height: 70%;
+	object-fit: contain;
+	transition: transform 0.4s ease;
+
+}
+
+
+#debug-gear:hover img {
+	transform: rotate(180deg) scale(1.1);
+}
+
+
+#debug-gear.hidden {
+	opacity: 0;
+	transform: scale(0.5) rotate(180deg);
+	pointer-events: none;
+}
+
+
+
+#debug-menu {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	width: 300px;
+	background: rgba(10, 15, 20, 0.95);
+	border: 2px solid #00ffcc;
+	border-radius: 8px;
+	color: #fff;
+	box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+	backdrop-filter: blur(5px);
+
+
+	opacity: 0;
+	visibility: hidden;
+	transform: translateY(20px) scale(0.95);
+	transform-origin: bottom right;
+	transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/*開いている時（.activeクラスがついた時） */
+#debug-menu.active {
+	opacity: 1;
+	visibility: visible;
+	transform: translateY(0) scale(1);
+}
+
+.debug-body button.active {
+    background: #00ffcc !important;
+    color: #000 !important;
+    box-shadow: 0 0 10px #00ffcc;
+    border-color: #fff !important;
+    font-weight: bold;
+}
+
+
+
+.debug-header {
+	background: #00ffcc;
+	color: #000;
+	padding: 5px 10px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-size: 14px;
+	border-radius: 6px 6px 0 0;
+}
+
+#debug-close {
+	width: 24px;
+	height: 24px;
+	background: none;
+	box-shadow: none;
+	color: #d60808;
+	font-size: 30px;
+	cursor: pointer;
+	padding: 0;
+	display: flex;
+	align-items: center;
+	
+}
+
+.debug-body {
+	padding: 12px;
+}
+
+.debug-item {
+	margin-bottom: 15px;
+}
+
+.label {
+	font-size: 11px;
+	color: #00ffcc;
+	margin-bottom: 5px;
+}
+
+.weather-btn-grid,
+.time-btn-grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 4px;
+}
+
+.moon-btn-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+	
+}
+
+.moon-btn-grid button {
+    padding: 2px !important;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.moon-btn-grid button img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
+}
+
+.moon-btn-grid button.active {
+    background: rgba(0, 255, 204, 0.3) !important;
+    border: 1px solid #00ffcc !important;
+    box-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+}
+
+#debug-lunar-item {
+    transition: all 0.4s ease;
+    overflow: hidden;
+}
+
+#debug-lunar-item.hidden {
+    opacity: 0;
+    max-height: 0;
+    margin-bottom: 0;
+    pointer-events: none;
+}
+
+#debug-lunar-item.visible {
+    opacity: 1;
+    max-height: 110px; /* メニューの高さに合わせて調整してね */
+    margin-bottom: 15px;
+    pointer-events: auto;
+}
+
+
+.time-btn-grid {
+	grid-template-columns: 1fr 1fr;
+}
+
+.debug-body button {
+	background: #b0a8a8;
+	color: #eee;
+	border: 1px solid #444;
+	padding: 4px;
+	font-size: 10px;
+	width: 100%;
+	box-shadow: none;
+}
+
+.debug-body button:hover {
+	background: #00ffcc;
+	color: #000;
+}
+
+.full-reset-btn {
+	border-color: #ff4757 !important;
+	color: #ff4757 !important;
+	margin-top: 10px;
+}
+
+/* スライダー */
+input[type="range"] {
+	width: 100%;
+	accent-color: #00ffcc;
+	cursor: pointer;
+}
+
+/* スクショモード */
+body.screenshot-mode .container,
+body.screenshot-mode h1,
+body.screenshot-mode #debug-wrapper {
+    opacity: 0;
+    pointer-events: none; /* 非表示中はクリックを無効化 */
+    transition: opacity 0.5s ease;
+}
+
+.container, h1, #debug-wrapper {
+    transition: opacity 0.5s ease;
+}
