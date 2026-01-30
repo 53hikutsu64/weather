@@ -269,7 +269,7 @@ button:hover {
 	background-color: rgba(210, 222, 235, 0.4);
 	width: 2px;
 	height: 20px;
-
+	will-change: transform;
 	animation: fall-straight linear infinite;
 }
 
@@ -477,6 +477,7 @@ button:hover {
 	position: absolute;
 	top: 0;
 	left: 0;
+	will-change: transform;
 }
 
 .cloud-track.far {
