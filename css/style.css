@@ -1147,7 +1147,6 @@ body.night.sunny-bg .container {
 #debug-lunar-item.visible {
 	opacity: 1;
 	max-height: 110px;
-	/* メニューの高さに合わせて調整してね */
 	margin-bottom: 15px;
 	pointer-events: auto;
 }
@@ -1196,8 +1195,8 @@ border-radius: 50%;
 	background: transparent !important;
 	border: none !important;
 	box-shadow: none !important;
-	color: rgba(255, 255, 255, 0.5);
-	font-size: 28px;
+	color: rgba(19, 95, 166, 0.681);
+	font-size: 20px;
 	padding: 0;
 	width: 30px;
 	height: 30px;
