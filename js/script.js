@@ -55,12 +55,33 @@ if (savedCity) {
 }
 
 
+/*検索を実行,テストモードを終了して本番*/
+function executeSearch() {
+
+	setMessage('');
+
+    const cityInput = document.getElementById('city-input');
+    if (!cityInput || cityInput.value.trim() === "") return;
+
+	const city = cityInput.value.trim();
+
+    window.IS_TEST_MODE = false;
+
+
+    const toggle = document.getElementById('mode-toggle');
+    if (toggle) toggle.checked = false;
+
+    fetchWeather();
+}
+
 async function fetchWeather(city) {
-	// 修正：引数 city がなくても、window.currentData があれば動くようにする
-	if (!city && !IS_TEST_MODE && !window.currentData) return;
+    //引数のcityがない場合は入力欄から持ってくるようにする
+    const inputVal = document.getElementById('city-input') ? document.getElementById('city-input').value.trim() : "";
+    const targetCity = city || inputVal;
 
-	let data;
+    if (!targetCity && !window.IS_TEST_MODE && !window.currentData) return;
 
+    let data;
 	if (IS_TEST_MODE) {
 
 		data = window.currentData || {
@@ -97,19 +118,18 @@ async function fetchWeather(city) {
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!テストモード!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 	} else {
+        try {
+            setMessage('世界からデータをお取り寄せ中...');
+            hideResults();
 
-		try {
-			setMessage('世界からデータをお取り寄せ中...');
-			hideResults();
+            // ★ここ！ city じゃなくて targetCity を使うようにしてね！
+            const res = await fetch(`https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${encodeURIComponent(targetCity)}&aqi=no&lang=ja`);
+            
+            if (!res.ok) throw new Error('都市が見つからないみたい；；');
+            const weather = await res.json();
 
-			// 天気を取得
-			const res = await fetch(`https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${encodeURIComponent(city)}&aqi=no&lang=ja`);
-			if (!res.ok) throw new Error('都市が見つからないみたい；；');
-			const weather = await res.json();
-
-			// 月のを取得
-			const astroRes = await fetch(`https://api.weatherapi.com/v1/astronomy.json?key=${API_KEY}&q=${encodeURIComponent(city)}`);
-			const astro = await astroRes.json();
+            const astroRes = await fetch(`https://api.weatherapi.com/v1/astronomy.json?key=${API_KEY}&q=${encodeURIComponent(targetCity)}`);
+            const astro = await astroRes.json();
 
 			// 本物のデータをテスト用と同じ形に整理する！
 			data = {
@@ -262,6 +282,17 @@ async function fetchWeather(city) {
 	if (data.cityName && data.cityName !== "Test City") {
 		localStorage.setItem('lastCity', data.cityName);
 	}
+
+	window.currentData = data;
+        
+        // ① 歯車アイコンを見つけて...
+        const gear = document.getElementById('debug-wrapper');
+        if (gear) {
+            // ② データを取得できたので表示させる！
+            gear.style.display = 'flex'; // または 'block' (ひくちゃんのCSSに合わせてね)
+        }
+
+        showResults();
 }
 
 

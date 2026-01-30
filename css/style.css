@@ -957,6 +957,7 @@ body.night.sunny-bg .container {
 	z-index: 1000;
 	font-family: 'DotGothic16', sans-serif;
 	pointer-events: none;
+	display: none;
 }
 
 #debug-gear,
@@ -966,6 +967,7 @@ body.night.sunny-bg .container {
 
 /* ギアボタン */
 #debug-gear {
+	
 	width: 50px;
 	height: 50px;
 	background: rgba(255, 255, 255, 0.204);

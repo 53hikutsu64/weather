@@ -7,7 +7,19 @@
 	<link rel="stylesheet" href="css/style.css">
 	<link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
 	<title></title>
-	<link rel="apple-touch-icon" href="icon.png">
+	<link rel="manifest" href="manifest.json">
+	<link rel="icon" href="img/favicon.png">
+
+	<link rel="apple-touch-icon" href="img/icon-180.png">
+
+	<meta property="og:title" content="お天気アプリ">
+	<meta property="og:description" content="世界の天気をのぞけるお天気ビューアー">
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="https://53hikutsu64.github.io/weather/">
+	<meta property="og:image" content="https://53hikutsu64.github.io/weather/img/Key-Visual.png">
+	<meta name="theme-color" content="#418ee1">
+
+	<meta name="twitter:card" content="summary_large_image">
 </head>
 
 <body>
@@ -18,7 +30,7 @@
 
 				<input type="text" id="city-input" name="city" placeholder="都市名"
 					required><!-- requiredは空だったと時にデータを送信しないよ！って -->
-				<button type="submit">CHECK</button>
+				<button onclick="executeSearch()">SEARCH</button>
 			</form>
 
 			<div id="message">
@@ -84,10 +96,11 @@
 							</div>
 						</div>
 
-						<div class="debug-item" id="debug-lunar-item"> <div class="label">MOON</div>
+						<div class="debug-item" id="debug-lunar-item">
+							<div class="label">MOON</div>
 							<div class="moon-btn-grid">
-								<button onclick="setMoonPhase('New Moon', this)"><img src="img/Full-Moon.png"
-										title="新月"style="filter: brightness(0);"></button>
+								<button onclick="setMoonPhase('New Moon', this)"><img src="img/Full-Moon.png" title="新月"
+										style="filter: brightness(0);"></button>
 								<button onclick="setMoonPhase('Waxing Crescent', this)"><img
 										src="img/Waxing-Crescent.png" title="三日月"></button>
 								<button onclick="setMoonPhase('First Quarter', this)"><img src="img/First-Quarter.png"
