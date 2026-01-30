@@ -112,7 +112,7 @@ button:hover {
 	display: none;
 }
 
-#results-moon{
+#results-moon {
 	margin-bottom: 20px;
 }
 
@@ -605,7 +605,7 @@ button:hover {
 
 .container {
 	max-width: 480px;
-
+	position: relative;
 	background-color: #ffffff30;
 	backdrop-filter: blur(2px);
 	padding: 40px;
@@ -967,7 +967,7 @@ body.night.sunny-bg .container {
 
 /* ギアボタン */
 #debug-gear {
-	
+
 	width: 50px;
 	height: 50px;
 	background: rgba(255, 255, 255, 0.204);
@@ -1037,11 +1037,11 @@ body.night.sunny-bg .container {
 }
 
 .debug-body button.active {
-    background: #00ffcc !important;
-    color: #000 !important;
-    box-shadow: 0 0 10px #00ffcc;
-    border-color: #fff !important;
-    font-weight: bold;
+	background: #00ffcc !important;
+	color: #000 !important;
+	box-shadow: 0 0 10px #00ffcc;
+	border-color: #fff !important;
+	font-weight: bold;
 }
 
 
@@ -1068,7 +1068,7 @@ body.night.sunny-bg .container {
 	padding: 0;
 	display: flex;
 	align-items: center;
-	
+
 }
 
 .debug-body {
@@ -1093,51 +1093,52 @@ body.night.sunny-bg .container {
 }
 
 .moon-btn-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-	
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 6px;
+
 }
 
 .moon-btn-grid button {
-    padding: 2px !important;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.1) !important;
+	padding: 2px !important;
+	height: 40px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: rgba(255, 255, 255, 0.1) !important;
 }
 
 .moon-btn-grid button img {
-    width: 24px;
-    height: 24px;
-    object-fit: contain;
-    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
+	width: 24px;
+	height: 24px;
+	object-fit: contain;
+	filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
 }
 
 .moon-btn-grid button.active {
-    background: rgba(0, 255, 204, 0.3) !important;
-    border: 1px solid #00ffcc !important;
-    box-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+	background: rgba(0, 255, 204, 0.3) !important;
+	border: 1px solid #00ffcc !important;
+	box-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
 }
 
 #debug-lunar-item {
-    transition: all 0.4s ease;
-    overflow: hidden;
+	transition: all 0.4s ease;
+	overflow: hidden;
 }
 
 #debug-lunar-item.hidden {
-    opacity: 0;
-    max-height: 0;
-    margin-bottom: 0;
-    pointer-events: none;
+	opacity: 0;
+	max-height: 0;
+	margin-bottom: 0;
+	pointer-events: none;
 }
 
 #debug-lunar-item.visible {
-    opacity: 1;
-    max-height: 110px; /* メニューの高さに合わせて調整してね */
-    margin-bottom: 15px;
-    pointer-events: auto;
+	opacity: 1;
+	max-height: 110px;
+	/* メニューの高さに合わせて調整してね */
+	margin-bottom: 15px;
+	pointer-events: auto;
 }
 
 
@@ -1173,15 +1174,56 @@ input[type="range"] {
 	cursor: pointer;
 }
 
-/* スクショモード */
-body.screenshot-mode .container,
-body.screenshot-mode h1,
-body.screenshot-mode #debug-wrapper {
-    opacity: 0;
-    pointer-events: none; /* 非表示中はクリックを無効化 */
-    transition: opacity 0.5s ease;
+/* UIなしぼたん */
+
+
+#ui-close-btn {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+border-radius: 50%;
+	background: transparent !important;
+	border: none !important;
+	box-shadow: none !important;
+	color: rgba(255, 255, 255, 0.5);
+	font-size: 28px;
+	padding: 0;
+	width: 30px;
+	height: 30px;
+	line-height: 1;
+	z-index: 10;
+	opacity: 0.6;
+	transition: all 0.3s ease;
 }
 
-.container, h1, #debug-wrapper {
-    transition: opacity 0.5s ease;
+
+#ui-close-btn:hover {
+	color: rgba(255, 255, 255, 1);
+	opacity: 1;
+	transform: scale(1.1) rotate(90deg);
+	background: transparent !important;
+	box-shadow: none !important;
+}
+
+.night #ui-close-btn:hover {
+	color: var(--accent-color);
+	filter: brightness(1);
+}
+
+
+
+
+/* ui-hiddenクラスがついたら透明 */
+body.ui-hidden .container,
+body.ui-hidden h1,
+body.ui-hidden #debug-wrapper {
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.6s ease;
+}
+
+.container,
+h1,
+#debug-wrapper {
+	transition: opacity 0.6s ease;
 }

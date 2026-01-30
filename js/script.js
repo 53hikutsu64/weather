@@ -831,23 +831,23 @@ function updateLunarVisibility(isDay) {
 
 //-----------------スクショモード--------------
 
-function enterScreenshotMode() {
-	// UIを隠すクラスをbodyに付与
-	document.body.classList.add('screenshot-mode');
+function hideUI() {
+  
+    document.body.classList.add('ui-hidden');
 
-	// デバッグメニュー自体も閉じておく
-	toggleDebug(false);
+  
+    toggleDebug(false);
 
-	// 画面のどこかをタップ/クリックしたら解除する設定
-	// ボタンを押した瞬間のクリックで即解除されないよう、100ミリ秒ほど待ってから登録
-	setTimeout(() => {
-		const restoreUI = () => {
-			document.body.classList.remove('screenshot-mode');
-			// 一度発動したらこの「解除用リスナー」自体を削除する
-			window.removeEventListener('pointerdown', restoreUI);
-		};
+  
+    setTimeout(() => {
+        const restoreUI = () => {
+          
+            document.body.classList.remove('ui-hidden');
+         
+            window.removeEventListener('pointerdown', restoreUI);
+        };
 
-
-		window.addEventListener('pointerdown', restoreUI);
-	}, 100);
+       
+        window.addEventListener('pointerdown', restoreUI);
+    }, 100); 
 }
